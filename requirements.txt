@@ -1,0 +1,8 @@
+# Pinned to the versions the paper's results were produced with.
+# Newer versions will very likely work, but the exact counts below were
+# verified against these.
+tensorflow==2.19.1
+librosa==0.11.0
+numpy==2.1.3
+scipy==1.17.1
+matplotlib==3.10.8

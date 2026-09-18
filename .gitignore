@@ -1,0 +1,15 @@
+# Python bytecode + cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Data and results — not distributed; see README
+data/
+results/
+
+# Editor / OS junk
+.DS_Store
+.idea/
+.vscode/
+*.swp
