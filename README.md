@@ -1,4 +1,4 @@
-# A 66 KB invasive-frog detector — model and reproduction code
+# A lightweight invasive-frog detector; model and reproduction code
 
 This repository deposits the trained detector from *A lightweight
 deep-learning detector for the real-time monitoring of the invasive
@@ -17,11 +17,9 @@ disk, that detects two invasive amphibians in 3-second field recordings:
 
 It also classifies six co-occurring native species (`BUECHO`, `FEJSAK`,
 `KUREIF`, `MICKUR`, `NIDOKI`, `ZHAOWS`) as additional multi-label
-outputs. However, the paper scores only the two
+outputs from the recordings in Ishigaki island, Japan. However, the paper scores only the two
 invasives, so these scripts report only those.
 
-This is **inference only** — no training code. Three scripts reproduce
-the per-site results on the three evaluation sets.
 
 ## Contents
 
@@ -57,7 +55,7 @@ Download and unpack it; you need two of the archives inside:
 
 - `train-and-test-datasets.zip` → gives `test/`, 760 WAVs in 31
   label-named folders. Used by `eval_ishigaki.py`. (The `train/` split
-  is not needed — this repo does not train.)
+  is not needed).
 - `playback.zip` → gives `playback/`, 134 files. Used by
   `prepare_iriomote.py`.
 
@@ -73,8 +71,7 @@ is `Rhinella marina_Cane Toad_Modified`; every other folder, including
 
 ## Running
 
-Each script is a flat top-level script: no arguments, no functions to
-call. Settings live in a **Paths** block at the top of each file — edit
+Each script is a flat top-level script with no arguments. Settings live in a **Paths** block at the top of each file — edit
 those once for your machine, then run the script.
 
 | Script | Constant | Points at |
@@ -117,48 +114,12 @@ Each writes a metrics CSV and a bar chart to `results/`. The Australia
 set is ~39,000 clips and is by far the slowest; the spectrogram cache
 (~1.3 GB, at `CACHE_PATH`) means every later run takes seconds.
 
-## Expected output
-
-Every value below was reproduced from the published data using the
-pinned requirements. They should match exactly rather than
-approximately, as the pipeline is deterministic end to end.
-
-**Ishigaki** (`results/ishigaki_metrics.csv`) — in-domain, at the
-threshold derived from the validation split, which is what a deployed
-device would ship with:
-
-| Species | t | F1 | Precision | Recall | TP | FP | FN | TN |
-|---|---|---|---|---|---|---|---|---|
-| POLLEU | 0.62 | 0.884 | 0.930 | 0.843 | 107 | 8 | 20 | 625 |
-| RHIMAR | 0.79 | 0.865 | 0.882 | 0.849 | 45 | 6 | 8 | 701 |
-
-**Iriomote** (`results/iriomote_metrics.csv`) — zero-shot, 550 windows:
-
-| Species | Strategy | t | F1 | Precision | Recall | TP | FP | FN | TN |
-|---|---|---|---|---|---|---|---|---|---|
-| POLLEU | original | 0.62 | 0.536 | 0.937 | 0.375 | 119 | 8 | 198 | 225 |
-| POLLEU | sweep-best | 0.42 | 0.765 | 0.812 | 0.722 | 229 | 53 | 88 | 180 |
-| RHIMAR | original | 0.79 | 0.923 | 1.000 | 0.857 | 168 | 0 | 28 | 354 |
-| RHIMAR | sweep-best | 0.54 | 0.990 | 0.995 | 0.985 | 193 | 1 | 3 | 353 |
-
-**Australia** (`results/australia_metrics.csv`) — zero-shot, RHIMAR
-only. The directory traversal yields 39,123 clips: 22,006 cane toad
-positives and 17,117 negatives.
-
-| Species | Strategy | t | F1 | Precision | Recall | TP | FP | FN | TN |
-|---|---|---|---|---|---|---|---|---|---|
-| RHIMAR | original | 0.79 | 0.894 | 0.856 | 0.936 | 20605 | 3476 | 1401 | 13641 |
-| RHIMAR | sweep-best | 0.77 | 0.895 | 0.845 | 0.950 | 20915 | 3837 | 1091 | 13280 |
-
-`prepare_iriomote.py` should report 550 windows from 39 files: 358
-annotations, 37 background, POLLEU 317, RHIMAR 196.
-
 ### The two threshold strategies
 
 On the zero-shot sets each species is scored at two operating points:
 
 - **`original`** — the threshold derived from the Ishigaki validation
-  split, applied unchanged. This is the deployment-realistic condition:
+  split, applied unchanged. This is the deployment-realistic condition as
   it requires no labelled data at the new site.
 - **`sweep-best`** — the threshold maximising F1 on the evaluation set
   itself, selected from a 91-point grid (0.05 to 0.95, step 0.01).
