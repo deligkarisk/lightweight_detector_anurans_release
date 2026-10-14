@@ -165,10 +165,10 @@ touches.
 
 ## Citation
 
-The paper's DOI is not yet assigned. Until then, cite it as:
-
-> A lightweight deep-learning detector for the real-time monitoring of
-> the invasive frogs *Rhinella marina* and *Polypedates leucomystax*.
+Deligkaris, K., Tabrizi, M. S., & Stephens, G. (2026). 
+A lightweight deep-learning detector for the real-time monitoring of the invasive frogs 
+Rhinella marina and Polypedates leucomystax. 
+bioRxiv, 2026.10.05.756611. https://doi.org/10.64898/2026.10.05.756611
 
 ## License
 
